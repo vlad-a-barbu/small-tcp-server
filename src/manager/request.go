@@ -31,6 +31,11 @@ func handleRequest(clientId string, payload string) string {
 			response = handlers.ReversedSum(tokens[1:])
 			break
 		}
+		case "mean": {
+			fmt.Println("Processing mean request")
+			response = handlers.ArithmeticMean(tokens[1:])
+			break
+		}
 		default: {
 			fmt.Println("Unable to process request")
 			response = "Invalid request"
