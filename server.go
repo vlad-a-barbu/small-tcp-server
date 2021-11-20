@@ -27,7 +27,8 @@ func handleConnection(clientId string) {
 			}
 		case nil:
 			{
-				handleRequest(clientId, request)
+				response := handleRequest(clientId, request)
+				clients[clientId].Write([]byte(response))
 			}
 		default:
 			{
@@ -38,24 +39,57 @@ func handleConnection(clientId string) {
 	}
 }
 
-func handleRequest(clientId string, request string) {
-	fmt.Printf("\nReceived request from client %s: %s\n", clientId, request)
+func tokenize(request string) []string {
 
 	tokens := strings.Split(strings.TrimSpace(request), " ")
+
+	validTokens := []string{}
+	for _, token := range tokens {
+		if len(token) > 0 {
+			validTokens = append(validTokens, token)
+		}
+	}
+
+	return validTokens
+}
+
+func handleRequest(clientId string, request string) string {
+	fmt.Printf("\nReceived request from client %s: %s\n", clientId, request)
+
+	tokens := tokenize(request)
 	command := tokens[0]
 
 	var response string
 
 	switch command {
 		case "scramble": {
-			response = fmt.Sprintf("Scramble request.\n")
+			if len(tokens) < 3 {
+				response = fmt.Sprintf("Invalid args. Provide at least 2 tokens.\n")
+				break
+			} else {
+				length := len(tokens[1])
+				for i := 0; i < length; i++ {
+					var scrambledToken string
+					for _, token := range tokens[1:] {
+						if length != len(token){
+							response = fmt.Sprintf("Invalid args. Token lengths must be equal.\n")
+							break
+						}
+						scrambledToken += string(token[i])
+					}
+					response += scrambledToken + " "
+				}
+			}
+			response = strings.TrimSpace(response) + "\n"
+			break
 		}
 		default: {
 			response = fmt.Sprintf("Invalid request.\n")
+			break
 		}
 	}
 
-	clients[clientId].Write([]byte(response))
+	return response
 }
 
 var clients map[string]net.Conn
