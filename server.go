@@ -8,15 +8,12 @@ import (
 	"log"
 	"net"
 	"os"
+	"strings"
 	"time"
 )
 
 func handleConnection(clientId string) {
 	for {
-		serverTime := time.Now().Format(time.ANSIC)
-		message := fmt.Sprintf("Connected successfully %s\n", serverTime)
-		clients[clientId].Write([]byte(message))
-
 		clientReader := bufio.NewReader(clients[clientId])
 		request, err := clientReader.ReadString('\n')
 
@@ -44,7 +41,19 @@ func handleConnection(clientId string) {
 func handleRequest(clientId string, request string) {
 	fmt.Printf("\nReceived request from client %s: %s\n", clientId, request)
 
-	response := fmt.Sprintf("Invalid request.\n")
+	tokens := strings.Split(strings.TrimSpace(request), " ")
+	command := tokens[0]
+
+	var response string
+
+	switch command {
+		case "scramble": {
+			response = fmt.Sprintf("Scramble request.\n")
+		}
+		default: {
+			response = fmt.Sprintf("Invalid request.\n")
+		}
+	}
 
 	clients[clientId].Write([]byte(response))
 }
@@ -90,6 +99,10 @@ func main() {
 
 		fmt.Printf("\nNew connection accepted - id: %s\n", clientId)
 		fmt.Printf("Num active connections: %d\n", len(clients))
+
+		serverTime := time.Now().Format(time.ANSIC)
+		message := fmt.Sprintf("Connected successfully %s\n", serverTime)
+		conn.Write([]byte(message))
 
 		go handleConnection(clientId)
 	}
