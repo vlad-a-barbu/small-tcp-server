@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"../config"
 	"bufio"
 	"fmt"
 	"github.com/google/uuid"
@@ -16,7 +17,14 @@ func Connect(){
 
 	clients := make(map[string]net.Conn)
 
+	config := config.Read()
+
 	for {
+
+		if len(clients) == config.MaxConnections {
+			continue
+		}
+
 		conn, err := listener.Accept()
 
 		if err != nil {
