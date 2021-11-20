@@ -14,22 +14,26 @@ import (
 func handleConnection(clientId string) {
 	for {
 		serverTime := time.Now().Format(time.ANSIC)
-		clients[clientId].Write([]byte(serverTime))
+		message := fmt.Sprintf("Connected successfully %s\n", serverTime)
+		clients[clientId].Write([]byte(message))
 
 		clientReader := bufio.NewReader(clients[clientId])
 		request, err := clientReader.ReadString('\n')
 
 		switch err {
-			case io.EOF: {
+		case io.EOF:
+			{
 				fmt.Printf("\nClosing connection with %s\n", clientId)
 				delete(clients, clientId)
 				fmt.Printf("Num active connections: %d\n\n", len(clients))
 				return
 			}
-			case nil:{
+		case nil:
+			{
 				handleRequest(clientId, request)
 			}
-			default: {
+		default:
+			{
 				fmt.Println(err)
 				return
 			}
@@ -40,7 +44,7 @@ func handleConnection(clientId string) {
 func handleRequest(clientId string, request string) {
 	fmt.Printf("\nReceived request from client %s: %s\n", clientId, request)
 
-	response := fmt.Sprintf("Invalid request. %s\n")
+	response := fmt.Sprintf("Invalid request.\n")
 
 	clients[clientId].Write([]byte(response))
 }
@@ -82,7 +86,6 @@ func main() {
 		}
 
 		clientId := uuid.New().String()
-
 		clients[clientId] = conn
 
 		fmt.Printf("\nNew connection accepted - id: %s\n", clientId)
