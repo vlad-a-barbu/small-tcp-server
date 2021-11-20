@@ -26,13 +26,13 @@ func getSquares(nums []utils.ParsedNum) []utils.ParsedNum {
 func Squares(tokens []string) string {
 	var result string
 
-	if len(tokens) < 2 {
+	if len(tokens) < 1 {
 		return "Provide at least one arg"
 	} else {
 
 		var nums []utils.ParsedNum
 
-		for _, token := range tokens[1:] {
+		for _, token := range tokens {
 			num := utils.ParseNum(token)
 			if num != nil {
 				nums = append(nums, *num)
