@@ -6,8 +6,10 @@ import (
 	"github.com/google/uuid"
 	"io"
 	"log"
+	"math"
 	"net"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -53,6 +55,37 @@ func tokenize(request string) []string {
 	return validTokens
 }
 
+func parseNum(token string) int {
+
+	var num string
+	for _, char := range token {
+		if char >= '0' && char <= '9' {
+			num += string(char)
+		}
+	}
+
+	if len(num) > 0 {
+		result, _ := strconv.Atoi(num)
+		return result
+	}
+
+	return -1
+}
+
+func isSquare(num int) bool {
+	return math.Sqrt(float64(num)) == math.Floor(math.Sqrt(float64(num)))
+}
+
+func getSquares(nums []int) []int {
+	squares := []int{}
+	for _, num := range nums {
+		if (isSquare(num)){
+			squares = append(squares, num)
+		}
+	}
+	return squares
+}
+
 func handleRequest(clientId string, request string) string {
 	fmt.Printf("\nReceived request from client %s: %s\n", clientId, request)
 
@@ -62,6 +95,31 @@ func handleRequest(clientId string, request string) string {
 	var response string
 
 	switch command {
+		case "squares": {
+			if len(tokens) < 2 {
+				response = fmt.Sprintf("Invalid args. Provide at least one token.\n")
+				break
+			} else {
+				nums := []int{}
+				for _, token := range tokens[1:] {
+					num := parseNum(token)
+					if num != -1 {
+						nums = append(nums, num)
+					}
+				}
+				squares := getSquares(nums)
+				if len(squares) > 0 {
+					response = "Square nums found: "
+					for _, square := range(squares) {
+						response += strconv.Itoa(square) + " "
+					}
+				} else {
+					response = "No squares were found"
+				}
+			}
+			response = strings.TrimSpace(response) + "\n"
+			break
+		}
 		case "scramble": {
 			if len(tokens) < 3 {
 				response = fmt.Sprintf("Invalid args. Provide at least 2 tokens.\n")
