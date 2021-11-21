@@ -38,7 +38,7 @@ func handleRequest(clientId string, payload string) string {
 		}
 		default: {
 			fmt.Println("Unable to process request")
-			response = "Invalid request"
+			response = "Invalid request. Available commands: 'squares', 'scramble', 'rsum', 'mean'"
 			break
 		}
 	}
