@@ -36,9 +36,14 @@ func handleRequest(clientId string, payload string) string {
 			response = handlers.ArithmeticMean(tokens[1:])
 			break
 		}
+		case "validpass": {
+			fmt.Println("Processing validpass request")
+			response = handlers.ValidPassword(tokens[1:])
+			break
+		}
 		default: {
 			fmt.Println("Unable to process request")
-			response = "Invalid request. Available commands: 'squares', 'scramble', 'rsum', 'mean'"
+			response = "Invalid request. Available commands: 'squares', 'scramble', 'rsum', 'mean', 'validpass'"
 			break
 		}
 	}
