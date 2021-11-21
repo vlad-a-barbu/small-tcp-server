@@ -1,9 +1,9 @@
 package manager
 
 import (
-	"../handlers"
-	"../utils"
 	"fmt"
+	"github.com/small-tcp-server/v1/src/handlers"
+	"github.com/small-tcp-server/v1/src/utils"
 	"strings"
 )
 

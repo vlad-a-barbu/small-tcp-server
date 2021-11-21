@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./manager"
+	"github.com/small-tcp-server/v1/src/manager"
 )
 
 func main() {

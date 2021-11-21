@@ -1,10 +1,10 @@
 package manager
 
 import (
-	"../config"
 	"bufio"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/small-tcp-server/v1/src/config"
 	"io"
 	"net"
 	"time"

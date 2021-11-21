@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"../utils"
 	"fmt"
+	"github.com/small-tcp-server/v1/src/utils"
 	"math"
 	"strconv"
 )
