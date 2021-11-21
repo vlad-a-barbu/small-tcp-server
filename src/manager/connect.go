@@ -42,15 +42,27 @@ func Connect(){
 		message := fmt.Sprintf("Connected successfully %s\n", serverTime)
 		conn.Write([]byte(message))
 
-		go handleConnection(clients, clientId)
+		go handleConnection(clients, clientId, config)
 	}
 }
 
-func handleConnection(clients map[string]net.Conn, clientId string){
+func handleConnection(clients map[string]net.Conn, clientId string, cfg config.Configuration){
+
+	numRequests := 0
+
 	for {
 		conn := clients[clientId]
 		clientReader := bufio.NewReader(conn)
 		request, err := clientReader.ReadString('\n')
+
+		numRequests += 1
+		if numRequests > cfg.MaxRequests {
+			fmt.Printf("\nClosing connection with %s\n", clientId)
+			clients[clientId].Write([]byte("Max requests limit exceeded, closing connection\n"))
+			delete(clients, clientId)
+			fmt.Printf("Num active connections: %d\n\n", len(clients))
+			return
+		}
 
 		switch err {
 		case io.EOF:
@@ -62,7 +74,7 @@ func handleConnection(clients map[string]net.Conn, clientId string){
 			}
 		case nil:
 			{
-				response := handleRequest(clientId, request)
+				response := handleRequest(clientId, request, cfg.MaxArgs)
 				conn.Write([]byte(response))
 			}
 		default:
@@ -72,4 +84,11 @@ func handleConnection(clients map[string]net.Conn, clientId string){
 			}
 		}
 	}
+}
+
+func removeClient(clients map[string]net.Conn, clientId string) {
+	fmt.Printf("\nClosing connection with %s\n", clientId)
+	clients[clientId].Write([]byte(""))
+	delete(clients, clientId)
+	fmt.Printf("Num active connections: %d\n\n", len(clients))
 }

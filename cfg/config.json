@@ -1,3 +1,5 @@
 {
-  "maxConnections": 3
+  "maxConnections": 3,
+  "maxArgs": 10,
+  "maxRequests": 10
 }

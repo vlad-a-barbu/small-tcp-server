@@ -10,6 +10,8 @@ import (
 
 type Configuration struct {
 	MaxConnections int `json:"maxConnections"`
+	MaxArgs int `json:"maxArgs"`
+	MaxRequests int `json:"maxRequests"`
 }
 
 func Read() Configuration {

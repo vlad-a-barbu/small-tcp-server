@@ -7,10 +7,15 @@ import (
 	"strings"
 )
 
-func handleRequest(clientId string, payload string) string {
+func handleRequest(clientId string, payload string, maxArgs int) string {
 	fmt.Printf("\nReceived request from client %s: %s\n", clientId, payload)
 
 	tokens := utils.Tokenize(payload)
+
+	if len(tokens) > maxArgs {
+		return "Max args limit exceeded\n"
+	}
+
 	command := tokens[0]
 
 	var response string
@@ -48,5 +53,7 @@ func handleRequest(clientId string, payload string) string {
 		}
 	}
 
-	return strings.TrimSpace(response) + "\n"
+	response = strings.TrimSpace(response) + "\n"
+
+	return response
 }
